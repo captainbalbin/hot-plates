@@ -1,0 +1,2 @@
+# hot-plates
+Rate restaurants
