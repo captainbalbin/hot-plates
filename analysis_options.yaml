@@ -9,3 +9,11 @@ linter:
     prefer_final_fields: false
     unnecessary_breaks: true
     use_key_in_widget_constructors: false
+
+analyzer:
+  strong-mode:
+    implicit-casts: false
+    implicit-dynamic: false
+
+formatter:
+  line-length: 100

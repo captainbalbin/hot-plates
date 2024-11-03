@@ -38,6 +38,7 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
+
     var pair = appState.current;
 
     return Scaffold(
@@ -46,10 +47,12 @@ class MyHomePage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             BigCard(pair: pair),
-            SizedBox(height: 20,),
+            SizedBox(
+              height: 20,
+            ),
             ElevatedButton(
               onPressed: () {
-               appState.newIdea();
+                appState.newIdea();
               },
               child: Text('New Idea'),
             ),
@@ -71,13 +74,18 @@ class BigCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final style = theme.textTheme.displayMedium!.copyWith(color: theme.colorScheme.onPrimary, fontWeight: FontWeight.bold);
-    
+    final style = theme.textTheme.displayMedium!.copyWith(
+        color: theme.colorScheme.onPrimary, fontWeight: FontWeight.bold);
+
     return Card(
       color: theme.colorScheme.primary,
       child: Padding(
         padding: const EdgeInsets.all(20.0),
-        child: Text(pair.asLowerCase, style: style, semanticsLabel: "${pair.first} ${pair.second}",),
+        child: Text(
+          pair.asLowerCase,
+          style: style,
+          semanticsLabel: "${pair.first} ${pair.second}",
+        ),
       ),
     );
   }
