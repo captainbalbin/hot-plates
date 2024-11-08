@@ -1,10 +1,19 @@
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-void main() {
+Future<void> main() async {
+  await dotenv.load(fileName: '.env');
+  await Supabase.initialize(
+    url: dotenv.env['SUPABASE_URL']!,
+    anonKey: dotenv.env['SUPABASE_KEY']!,
+  );
   runApp(MyApp());
 }
+
+final supabase = Supabase.instance.client;
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -30,22 +39,22 @@ class MyApp extends StatelessWidget {
 }
 
 class MyAppState extends ChangeNotifier {
-  var current = WordPair.random();
+  final SupabaseClient client = Supabase.instance.client;
 
-  void newIdea() {
-    current = WordPair.random();
-    notifyListeners();
-  }
+  List<Map<String, dynamic>> restaurants = [];
 
-  var favorites = <WordPair>[];
+  Future<void> fetchRestaurants() async {
+    try {
+      final restaurantsRes =
+          await supabase.from('restaurants_with_ratings').select();
 
-  void toggleFavorite() {
-    if (favorites.contains(current)) {
-      favorites.remove(current);
-    } else {
-      favorites.add(current);
+      print("restaurants: $restaurantsRes");
+
+      restaurants = List<Map<String, dynamic>>.from(restaurantsRes);
+      notifyListeners();
+    } catch (e) {
+      print("Error fetching ratings: $e");
     }
-    notifyListeners();
   }
 }
 
@@ -86,45 +95,85 @@ class MyHomePage extends StatelessWidget {
   }
 }
 
-class GeneratorPage extends StatelessWidget {
+class GeneratorPage extends StatefulWidget {
+  @override
+  State<GeneratorPage> createState() => _GeneratorPageState();
+}
+
+class _GeneratorPageState extends State<GeneratorPage> {
+  late Future<void> _future;
+
+  @override
+  void initState() {
+    super.initState();
+    var appState = context.read<MyAppState>();
+    _future = appState.fetchRestaurants();
+  }
+
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
-    var pair = appState.current;
 
-    IconData icon;
-    if (appState.favorites.contains(pair)) {
-      icon = Icons.favorite;
-    } else {
-      icon = Icons.favorite_border;
-    }
+    return Scaffold(
+      body: FutureBuilder<void>(
+        future: _future,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
 
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          BigCard(pair: pair),
-          SizedBox(height: 10),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ElevatedButton.icon(
-                onPressed: () {
-                  appState.toggleFavorite();
-                },
-                icon: Icon(icon),
-                label: Text('Like'),
-              ),
-              SizedBox(width: 10),
-              ElevatedButton(
-                onPressed: () {
-                  appState.newIdea();
-                },
-                child: Text('Next'),
-              ),
-            ],
-          ),
-        ],
+          if (snapshot.hasError) {
+            print('Error in FutureBuilder: ${snapshot.error}');
+            return Center(child: Text('Error: ${snapshot.error}'));
+          }
+
+          if (snapshot.connectionState == ConnectionState.done) {
+            var restaurants = appState.restaurants;
+
+            print('Restaurants: $restaurants');
+
+            if (restaurants.isEmpty) {
+              return Center(child: Text('No ratings found.'));
+            }
+
+            return ListView.builder(
+              itemCount: restaurants.length,
+              itemBuilder: (context, index) {
+                var restaurant = restaurants[index];
+                print('*** Restaurant: $restaurant');
+
+                var ratings = restaurant['ratings'] as List<dynamic>? ?? [];
+
+                print('*** Ratings: $ratings');
+
+                return ListTile(
+                  title: Text(restaurant['name'] ?? 'No name'),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: ratings.map<Widget>((rating) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 4.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('Food: ${rating['food_rating']}'),
+                            Text('Drinks: ${rating['drinks_rating']}'),
+                            Text('Service: ${rating['service_rating']}'),
+                            Text('Atmosphere: ${rating['atmosphere_rating']}'),
+                            Text('Affordability: ${rating['affordability']}'),
+                            Text('Score: ${rating['total_score']}'),
+                          ],
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                );
+              },
+            );
+          }
+
+          return const Center(child: Text('Unexpected state'));
+        },
       ),
     );
   }

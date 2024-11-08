@@ -1,5 +1,5 @@
-name: namer_app
-description: A new Flutter project.
+name: hot_plates
+description: Rate restaurants
 
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
@@ -14,6 +14,8 @@ dependencies:
 
   english_words: ^4.0.0
   provider: ^6.0.0
+  supabase_flutter: ^2.8.0
+  flutter_dotenv: ^5.0.0
 
 dev_dependencies:
   flutter_test:
@@ -23,3 +25,5 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - .env
