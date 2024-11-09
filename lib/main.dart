@@ -21,6 +21,8 @@ Future<void> main() async {
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -38,14 +40,57 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatelessWidget {
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({super.key});
+
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  int _currentPageIndex = 0;
+
+  static final List<Widget> _widgetOptions = <Widget>[
+    OverviewPage(),
+    Text('Favorites Page'),
+    Text('Profile Page'),
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Restaurant Ratings'),
       ),
-      body: OverviewPage(),
+      body: Center(
+        child: _widgetOptions.elementAt(_currentPageIndex),
+      ),
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: _currentPageIndex,
+        onDestinationSelected: (int index) {
+          setState(() {
+            _currentPageIndex = index;
+          });
+        },
+        labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
+        destinations: const <Widget>[
+          NavigationDestination(
+            selectedIcon: Icon(Icons.home),
+            icon: Icon(Icons.home_outlined),
+            label: 'Home',
+          ),
+          NavigationDestination(
+            selectedIcon: Icon(Icons.notifications),
+            icon: Icon(Icons.notifications_outlined),
+            label: 'Notifications',
+          ),
+          NavigationDestination(
+            selectedIcon: Icon(Icons.message),
+            icon: Icon(Icons.message_outlined),
+            label: 'Messages',
+          ),
+        ],
+      ),
     );
   }
 }

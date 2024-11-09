@@ -6,6 +6,8 @@ import '../application/restaurant_service.dart';
 import './restaurant_card.dart';
 
 class OverviewPage extends StatefulWidget {
+  const OverviewPage({super.key});
+
   @override
   State<OverviewPage> createState() => _OverviewPageState();
 }
@@ -36,12 +38,17 @@ class _OverviewPageState extends State<OverviewPage> {
           return Center(child: Text('No ratings found.'));
         }
 
-        return ListView.builder(
-          itemCount: restaurants.length,
-          itemBuilder: (context, index) {
-            var restaurant = restaurants[index];
-            return RestaurantCard(restaurant: restaurant);
+        return RefreshIndicator(
+          onRefresh: () async {
+            await appState.fetchRestaurants();
           },
+          child: ListView.builder(
+            itemCount: restaurants.length,
+            itemBuilder: (context, index) {
+              var restaurant = restaurants[index];
+              return RestaurantCard(restaurant: restaurant);
+            },
+          ),
         );
       },
     );
