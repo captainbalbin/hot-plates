@@ -10,7 +10,17 @@ linter:
     unnecessary_breaks: true
     use_key_in_widget_constructors: false
 
+
 analyzer:
+  errors:
+    undefined_identifier: error
+    undefined_class: error
+    undefined_function: error
+    undefined_getter: error
+    undefined_setter: error
+    undefined_method: error
+    unused_local_variable: error
+
   strong-mode:
     implicit-casts: false
     implicit-dynamic: false
