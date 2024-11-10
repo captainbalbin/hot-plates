@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ionicons/ionicons.dart';
 
 List<Widget> generateNavItems(
-    int currentPageIndex, ValueChanged<int> onPressed) {
+    BuildContext context, int currentPageIndex, Function(int) onPressed) {
   const iconMap = {
     0: Ionicons.restaurant,
     1: Ionicons.heart,
@@ -28,37 +28,42 @@ List<Widget> generateNavItems(
     4,
     (index) {
       return Expanded(
-          child: GestureDetector(
-        onTap: () => onPressed(index),
-        child: SizedBox(
-          height: 56,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Icon(
-                currentPageIndex == index
-                    ? iconMap[index]
-                    : iconOutlineMap[index],
-              ),
-              Text(
-                navTextMap[index].toString(),
-                style: TextStyle(
-                  color: currentPageIndex == index ? Colors.white : Colors.grey,
+        child: GestureDetector(
+          onTap: () => onPressed(index),
+          child: Container(
+            height: 56,
+            color: Colors.transparent, // Ensure the container is transparent
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Icon(
+                  currentPageIndex == index
+                      ? iconMap[index]
+                      : iconOutlineMap[index],
                 ),
-              ),
-            ],
+                Text(
+                  navTextMap[index].toString(),
+                  style: TextStyle(
+                    color: currentPageIndex == index
+                        ? Theme.of(context).colorScheme.primary
+                        : Theme.of(context).textTheme.bodyMedium?.color,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
-      ));
+      );
     },
   );
 
   navItems.insert(
-      2,
-      const SizedBox(
-        width: 40,
-      ));
+    2,
+    const SizedBox(
+      width: 40,
+    ),
+  );
 
   return navItems;
 }

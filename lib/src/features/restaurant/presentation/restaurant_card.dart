@@ -24,20 +24,22 @@ class RestaurantCard extends StatelessWidget {
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                   Text(
-                    restaurant.avgTotalScore.toStringAsFixed(2),
+                    restaurant.avgTotalScore?.toStringAsFixed(2) ?? '-',
                     style: TextStyle(color: Colors.grey, fontSize: 14),
                   ),
                 ],
               ),
               SizedBox(height: 8),
-              Text('Food: ${restaurant.avgFoodRating.toStringAsFixed(2)}'),
-              Text('Drinks: ${restaurant.avgDrinksRating.toStringAsFixed(2)}'),
               Text(
-                  'Service: ${restaurant.avgServiceRating.toStringAsFixed(2)}'),
+                  'Food: ${restaurant.avgFoodRating?.toStringAsFixed(2) ?? '-'}'),
               Text(
-                  'Atmosphere: ${restaurant.avgAtmosphereRating.toStringAsFixed(2)}'),
+                  'Drinks: ${restaurant.avgDrinksRating?.toStringAsFixed(2) ?? '-'}'),
               Text(
-                  'Affordability: ${restaurant.avgAffordability ? 'Affordable' : 'Not Affordable'}'),
+                  'Service: ${restaurant.avgServiceRating?.toStringAsFixed(2) ?? '-'}'),
+              Text(
+                  'Atmosphere: ${restaurant.avgAtmosphereRating?.toStringAsFixed(2) ?? '-'}'),
+              Text(
+                  'Affordability: ${restaurant.avgAffordability == null ? '-' : (restaurant.avgAffordability! ? 'Affordable' : 'Expensive')}'),
             ],
           ),
         ),

@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hot_plates/src/shared/nav_items.dart';
@@ -30,13 +31,51 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Restaurant Ratings',
       theme: ThemeData(
-        useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.deepPurple,
-          brightness: Brightness.dark,
+        brightness: Brightness.light,
+        colorScheme: ColorScheme.light(
+            primary: Colors.black,
+            secondary: Colors.deepPurpleAccent,
+            surface: Colors.white),
+        scaffoldBackgroundColor: Colors.white,
+        cardTheme: CardTheme(
+          color: Colors.grey[200],
+          shadowColor: Colors.transparent,
+        ),
+        appBarTheme: AppBarTheme(),
+        textTheme: TextTheme(
+          bodyLarge: TextStyle(color: Colors.black),
+          bodyMedium: TextStyle(color: Colors.black),
+        ),
+        iconTheme: IconThemeData(color: Colors.black),
+        buttonTheme: ButtonThemeData(
+          buttonColor: Colors.deepPurple,
+          textTheme: ButtonTextTheme.primary,
         ),
       ),
-      themeMode: ThemeMode.dark,
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+        primaryColor: Colors.deepPurple,
+        colorScheme: ColorScheme.dark(
+          primary: Colors.deepPurple,
+          secondary: Colors.deepPurpleAccent,
+        ),
+        scaffoldBackgroundColor: Colors.black,
+        cardTheme: CardTheme(
+          color: Colors.black,
+          shadowColor: Colors.transparent,
+        ),
+        appBarTheme: AppBarTheme(
+          backgroundColor: Colors.black,
+          iconTheme: IconThemeData(color: Colors.white),
+          titleTextStyle: TextStyle(color: Colors.white, fontSize: 20),
+        ),
+        textTheme: TextTheme(
+          bodyLarge: TextStyle(color: Colors.white),
+          bodyMedium: TextStyle(color: Colors.white),
+        ),
+        iconTheme: IconThemeData(color: Colors.white),
+      ),
+      themeMode: ThemeMode.system,
       home: MyHomePage(),
     );
   }
@@ -68,8 +107,20 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
+      extendBody: true,
       appBar: AppBar(
         title: Text('Restaurant Ratings'),
+        elevation: 0,
+        backgroundColor: Colors.white.withAlpha(200),
+        flexibleSpace: ClipRRect(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
+            child: Container(
+              color: Colors.transparent,
+            ),
+          ),
+        ),
         actions: <Widget>[
           IconButton(
             icon: Icon(Ionicons.swap_vertical),
@@ -94,7 +145,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Row(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: generateNavItems(_currentPageIndex, onPressed),
+          children: generateNavItems(context, _currentPageIndex, onPressed),
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,

@@ -39,6 +39,7 @@ class _OverviewPageState extends State<OverviewPage> {
         }
 
         return RefreshIndicator(
+          edgeOffset: kToolbarHeight,
           onRefresh: () async {
             await appState.fetchRestaurants();
           },
