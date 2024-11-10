@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hot_plates/src/shared/nav_items.dart';
+import 'package:ionicons/ionicons.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'src/features/restaurant/application/restaurant_service.dart';
@@ -69,6 +70,20 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Restaurant Ratings'),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Ionicons.swap_vertical),
+            onPressed: () {
+              print('Sort button pressed');
+            },
+          ),
+          IconButton(
+            icon: Icon(Ionicons.search),
+            onPressed: () {
+              print('Search button pressed');
+            },
+          ),
+        ],
       ),
       body: Center(
         child: _widgetOptions.elementAt(_currentPageIndex),
@@ -86,9 +101,9 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: FloatingActionButton(
         shape: CircleBorder(),
         onPressed: () {
-          // TODO: Add onPressed logic
+          print('Add button pressed');
         },
-        child: Icon(Icons.add),
+        child: Icon(Ionicons.add),
       ),
     );
   }
