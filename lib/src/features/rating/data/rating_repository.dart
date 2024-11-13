@@ -13,7 +13,7 @@ class RatingRepository {
 
       return Rating.fromJson(Map<String, dynamic>.from(data.first));
     } catch (e) {
-      print("Error fetching ratings: $e");
+      print("Error creating ratings: $e");
       return null;
     }
   }

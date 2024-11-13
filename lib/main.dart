@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:hot_plates/src/features/rating/application/rating_service.dart';
 import 'package:hot_plates/src/features/rating/presentation/add_rating.dart';
 import 'package:hot_plates/src/shared/nav_items.dart';
 import 'package:ionicons/ionicons.dart';
@@ -17,8 +18,12 @@ Future<void> main() async {
   );
 
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => RestaurantService(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => RestaurantService()),
+        ChangeNotifierProvider(
+            create: (context) => RatingService()), // Add RatingService provider
+      ],
       child: MyApp(),
     ),
   );
@@ -155,16 +160,21 @@ class _MyHomePageState extends State<MyHomePage> {
         shape: CircleBorder(),
         onPressed: () {
           showModalBottomSheet(
-            enableDrag: true,
-            showDragHandle: true,
-            isScrollControlled: true,
-            context: context,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.vertical(top: Radius.circular(10.0)),
-            ),
-            builder: (context) =>
-                FractionallySizedBox(heightFactor: 0.8, child: AddRatingPage()),
-          );
+              enableDrag: true,
+              // showDragHandle: true,
+              isScrollControlled: true,
+              context: context,
+              // shape: RoundedRectangleBorder(
+              //   borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
+              // ),
+              builder: (context) => FractionallySizedBox(
+                    heightFactor: 0.8,
+                    child: ClipRRect(
+                      borderRadius:
+                          BorderRadius.vertical(top: Radius.circular(30)),
+                      child: AddRatingPage(),
+                    ),
+                  ));
         },
         child: Icon(Ionicons.add),
       ),
