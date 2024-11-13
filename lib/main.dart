@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:hot_plates/src/features/rating/presentation/add_rating.dart';
 import 'package:hot_plates/src/shared/nav_items.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:provider/provider.dart';
@@ -96,6 +97,7 @@ class _MyHomePageState extends State<MyHomePage> {
     Text('Favorites Page'),
     Text('Profile Page'),
     Text('Settings Page'),
+    AddRatingPage(),
   ];
 
   void onPressed(int index) {
@@ -152,7 +154,17 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: FloatingActionButton(
         shape: CircleBorder(),
         onPressed: () {
-          print('Add button pressed');
+          showModalBottomSheet(
+            enableDrag: true,
+            showDragHandle: true,
+            isScrollControlled: true,
+            context: context,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(10.0)),
+            ),
+            builder: (context) =>
+                FractionallySizedBox(heightFactor: 0.8, child: AddRatingPage()),
+          );
         },
         child: Icon(Ionicons.add),
       ),
